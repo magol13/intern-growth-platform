@@ -19,21 +19,17 @@ func Init() {
 	host := getEnvOrDefault("DB_HOST", "localhost")
 	port := getEnvOrDefault("DB_PORT", "5432")
 
-	// На macOS (Homebrew) PostgreSQL создаёт роль с именем системного пользователя.
-	// os.Getenv("USER") автоматически вернёт твоё имя (например, "maria").
-	// Переопредели через переменную окружения DB_USER если нужно другое имя.
 	systemUser := os.Getenv("USER")
 	if systemUser == "" {
 		systemUser = "postgres"
 	}
 	user := getEnvOrDefault("DB_USER", systemUser)
 
-	password := os.Getenv("DB_PASSWORD") // пустой пароль — норма для локального Homebrew PG
+	password := os.Getenv("DB_PASSWORD")
 	dbname := getEnvOrDefault("DB_NAME", "intern_platform")
 
 	var dsn string
 	if password == "" {
-		// Без пароля — стандартная конфигурация macOS Homebrew
 		dsn = fmt.Sprintf(
 			"host=%s port=%s user=%s dbname=%s sslmode=disable TimeZone=Europe/Moscow",
 			host, port, user, dbname,

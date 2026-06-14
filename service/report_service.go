@@ -111,7 +111,6 @@ func GenerateStudentReportPDF(studentID uuid.UUID) ([]byte, error) {
 		return nil, err
 	}
 
-	// Собираем строки отчёта (только ASCII через транслитерацию)
 	var lines []string
 	lines = append(lines, "STUDENT PROGRESS REPORT")
 	lines = append(lines, strings.Repeat("=", 55))
@@ -148,7 +147,7 @@ func buildRawPDF(textLines []string) []byte {
 	var streamBuf bytes.Buffer
 	streamBuf.WriteString("BT\n")
 	streamBuf.WriteString("/F1 11 Tf\n") // шрифт Helvetica, 11pt
-	streamBuf.WriteString("14 TL\n")    // межстрочный интервал 14pt
+	streamBuf.WriteString("14 TL\n")     // межстрочный интервал 14pt
 	streamBuf.WriteString("50 800 Td\n") // начало текста: x=50, y=800 (от нижнего края A4)
 	for _, line := range textLines {
 		// Экранируем символы, зарезервированные в PDF

@@ -11,9 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// respondWithReport — вспомогательная функция: отдаёт отчёт в нужном формате.
-// format=json → скачивается файл report.json
-// format=pdf  → скачивается файл report.pdf
 func respondWithReport(context *gin.Context, studentID uuid.UUID, format string) {
 	if format == "pdf" {
 		pdfBytes, err := service.GenerateStudentReportPDF(studentID)
@@ -29,7 +26,7 @@ func respondWithReport(context *gin.Context, studentID uuid.UUID, format string)
 		return
 	}
 
-	// По умолчанию — JSON как скачиваемый файл
+	// JSON как скачиваемый файл
 	jsonBytes, err := service.GenerateStudentReportJSON(studentID)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{

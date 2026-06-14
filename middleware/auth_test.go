@@ -67,7 +67,7 @@ func TestExtractToken_MissingBearerPrefix_ReturnsFalse(t *testing.T) {
 		"my-secret-token",
 		"Token my-secret-token",
 		"Basic dXNlcjpwYXNz",
-		"bearer my-secret-token", // bearer с маленькой буквы
+		"bearer my-secret-token",
 	}
 
 	for _, header := range invalidHeaders {
