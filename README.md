@@ -164,10 +164,32 @@ curl -H "Authorization: Bearer mentor-secret-token-abc" \
   "http://localhost:8080/tasks?status=NeedsHelp"
 ```
 
+### Добавление стажера нового
+```bash
+curl -X POST http://localhost:8080/students \
+-H "Authorization: Bearer mentor-secret-token-abc" \
+-H "Content-Type: application/json" \
+-d '{"name": "Иван Петров"}'
+```
+
 ### Задачи стажёра
 ```bash
 curl -H "Authorization: Bearer intern1-secret-token-xyz" \
   http://localhost:8080/my-tasks
+```
+
+### Создаём задачу 
+```bash
+curl -s -X POST http://localhost:8080/tasks \
+  -H "Authorization: Bearer mentor-secret-token-abc" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Реализовать REST API трекера задач",
+    "description": "Написать CRUD для сущности Task на Go + Gin. Покрыть все маршруты.",
+    "deadline": "2026-12-31",
+    "assigned_student_id": "22222222-2222-2222-2222-222222222222",
+    "competences": ["Go programming", "REST API"]
+  }' | python3 -m json.tool
 ```
 
 ### Стажёр меняет статус задачи
@@ -177,6 +199,15 @@ curl -X PATCH "http://localhost:8080/my-tasks/<task_id>/status" \
   -H "Content-Type: application/json" \
   -d '{"status": "InProgress"}'
 ```
+
+### Стажёр прикрепляет ссылку на выполненную работу
+```bash
+curl -s -X PATCH "http://localhost:8080/my-tasks/<task_id>/artefacts" \
+-H "Authorization: Bearer intern1-secret-token-xyz" \
+-H "Content-Type: application/json" \
+-d '{"url": "https://github.com/artem/intern-project/pull/1"}' | python3 -m json.tool
+```
+
 
 ### Матрица компетенций стажёра (для ментора)
 ```bash
@@ -197,6 +228,15 @@ curl -H "Authorization: Bearer mentor-secret-token-abc" \
   "http://localhost:8080/students/22222222-2222-2222-2222-222222222222/report?format=pdf" \
   --output report.pdf
 ```
+
+### Новая компетенция
+```bash
+curl -X POST http://localhost:8080/competences \
+-H "Authorization: Bearer mentor-secret-token-abc" \
+-H "Content-Type: application/json" \
+-d '{"name": "Machine Learning"}'
+```
+
 
 ---
 
