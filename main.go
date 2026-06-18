@@ -41,6 +41,7 @@ func main() {
 			mentorRoutes.PUT("/tasks/:id", handlers.UpdateTask)
 			mentorRoutes.DELETE("/tasks/:id", handlers.DeleteTask)
 
+			mentorRoutes.POST("/students", handlers.CreateStudent)
 			mentorRoutes.POST("/competences", handlers.CreateCompetence)
 			mentorRoutes.GET("/students/:id/matrix", handlers.GetStudentMatrix)
 			mentorRoutes.GET("/students/:id/report", handlers.GetMentorStudentReport)

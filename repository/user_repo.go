@@ -30,3 +30,7 @@ func FindAllInterns() ([]models.User, error) {
 	result := db.DB.Where("role = ?", models.RoleIntern).Find(&interns)
 	return interns, result.Error
 }
+
+func CreateUser(user *models.User) error {
+	return db.DB.Create(user).Error
+}

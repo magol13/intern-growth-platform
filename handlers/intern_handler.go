@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"net/http"
 
 	"platform-intern-growth/middleware"
@@ -11,6 +13,57 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+type CreateStudentInput struct {
+	Name string `json:"name" binding:"required"`
+}
+
+func CreateStudent(context *gin.Context) {
+	var input CreateStudentInput
+	if err := context.ShouldBindJSON(&input); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   "Поле name обязательно",
+		})
+		return
+	}
+
+	// Генерируем случайный токен (32 случайных байта → hex-строка)
+	tokenBytes := make([]byte, 16)
+	if _, err := rand.Read(tokenBytes); err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   "Не удалось сгенерировать токен",
+		})
+		return
+	}
+	token := hex.EncodeToString(tokenBytes)
+
+	newIntern := &models.User{
+		ID:    uuid.New(),
+		Name:  input.Name,
+		Role:  models.RoleIntern,
+		Token: token,
+	}
+
+	if err := repository.CreateUser(newIntern); err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   "Не удалось создать стажёра",
+		})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{
+		"success": true,
+		"data": gin.H{
+			"id":    newIntern.ID,
+			"name":  newIntern.Name,
+			"role":  newIntern.Role,
+			"token": newIntern.Token,
+		},
+	})
+}
 
 func GetMyTasks(context *gin.Context) {
 	currentUser := context.MustGet(middleware.CurrentUserKey).(*models.User)
